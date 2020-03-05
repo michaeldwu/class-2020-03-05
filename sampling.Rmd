@@ -1,0 +1,33 @@
+---
+title: "Sampling"
+author: "Michael Wu"
+date: "3/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(googlesheets4)
+library(fs)
+library(janitor)
+library(ggthemes)
+
+sheets_deauth()
+
+sampling_data <- read_sheet('https://docs.google.com/spreadsheets/d/14HmwN2cEVAJHupuehCuLdwG9BXtR3COrxDgaaylLhkA/edit?usp=sharing') %>%
+  clean_names()
+```
+
+```{r}
+sampling_data <- sampling_data %>%
+  slice(1:51) %>%
+  mutate(percent_red = red/(red+white))
+
+ggplot(sampling_data, aes(x = percent_red)) +
+  geom_histogram(bins = 20) +
+  labs(title = "Percent Red") +
+  theme_classic()
+```
+
+
