@@ -41,13 +41,35 @@ x <- ggplot(sampling_data, aes(x = percent_red)) +
 
 urn1 <- bowl %>% 
   rep_sample_n(size = 25, reps = 50) %>%
-  group_by(replicate)
+  group_by(replicate) 
 
 # Urn 2 from class implementation
 
-urn2 <- tibble(bead_ID = 1:10000, color = c(rep("Red", 2000), rep("White", 8000)))
+urn2 <- tibble(color = c(rep("Red", 2000), rep("White", 8000))) 
+
+simulate_class <- function(urn) {
+  urn %>%
+    rep_sample_n(size = 25, reps = 51) %>%
+    group_by(replicate) %>%
+    summarize(red = sum(color == "Red")) %>% 
+    mutate(prop_red = red / 25)
+}
+
+sim_results <- tibble(sim_ID = 1:1000,
+                      results = map(sim_ID, ~ simulate_class(urn2)))
 
 
+# urn2_plot <- ggplot(urn2, aes(x = prop_red)) +
+#   geom_histogram(bins = 10) +
+#   theme_classic() + 
+#   labs(title = "Distribution of Red Beads", subtitle = "51 Simulations", x = "Proportion of Red Beads", y = "Count")
+# 
+# urn2_plot
+
+sim_results[[2]][[2]] %>%
+  ggplot(aes(x = prop_red)) +
+  geom_histogram(bins = 20) +
+  theme_classic()
 ```
 
 
