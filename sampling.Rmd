@@ -1,6 +1,6 @@
 ---
-title: "Sampling"
-author: "Michael Wu"
+title: "Sampling Demostration from Class"
+author: "Jessica Edwards and Michael Wu"
 date: "3/5/2020"
 output: html_document
 ---
@@ -12,6 +12,8 @@ library(googlesheets4)
 library(fs)
 library(janitor)
 library(ggthemes)
+library(moderndive)
+library(infer)
 
 sheets_deauth()
 
@@ -19,15 +21,33 @@ sampling_data <- read_sheet('https://docs.google.com/spreadsheets/d/14HmwN2cEVAJ
   clean_names()
 ```
 
-```{r}
+```{r create-table, echo = FALSE}
 sampling_data <- sampling_data %>%
   slice(1:51) %>%
   mutate(percent_red = red/(red+white))
 
-ggplot(sampling_data, aes(x = percent_red)) +
+x <- ggplot(sampling_data, aes(x = percent_red)) +
   geom_histogram(bins = 20) +
-  labs(title = "Percent Red") +
+  labs(
+    title = "Percentage of Red Beads Drawn",
+    subtitle = "Should we be suspicious of the outliers?",
+    caption = "Classroom data from 2020-03-03",
+    x = "Percent Red Beads",
+    y = "Count"
+  ) +
   theme_classic()
+
+# Urn 1 from the textbook implementation using moderndive
+
+urn1 <- bowl %>% 
+  rep_sample_n(size = 25, reps = 50) %>%
+  group_by(replicate)
+
+# Urn 2 from class implementation
+
+urn2 <- tibble(bead_ID = 1:10000, color = c(rep("Red", 2000), rep("White", 8000)))
+
+
 ```
 
 
